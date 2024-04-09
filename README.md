@@ -44,7 +44,7 @@ cd ..
 cmake --build ./build --config release --target all -j 6 --
 ```
 
-# execute
+# Run it
 ```
 cd build
 ./air-quality-monitor
