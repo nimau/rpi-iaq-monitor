@@ -36,6 +36,92 @@ struct AirQuality {
     float gas_percentage;
 };
 
+struct ValueInterpretor {
+    static std::string humidityStr(float const& value) {
+        if (value < 40) {
+            return "DRY";
+        }
+        if (value < 60) {
+            return "OPTIMAL";
+        }
+        return "TOO HUMID";
+    }
+
+    static std::string bvocStr(float const& value) {
+        if (value <= 200) {
+            return "VERY GOOD";
+        }
+        if (value <= 300) {
+            return "GOOD";
+        }
+        if (value <= 400) {
+            return "ACCEPTABLE";
+        }
+        if (value <= 600) {
+            return "MODERATE";
+        }
+        if (value <= 1000) {
+            return "POOR";
+        }
+        return "BAD";
+    }
+
+    static std::string co2Str(float const& value) {
+        if (value <= 400) {
+            return "IDEAL";
+        }
+        if (value <= 800) {
+            return "GOOD";
+        }
+        if (value <= 1000) {
+            return "ACCEPTABLE";
+        }
+        if (value <= 1500) {
+            return "POOR";
+        }
+        if (value <= 2500) {
+            return "VERY POOR";
+        }
+        if (value <= 5000) {
+            return "UNHEALTHY";
+        }
+        return "HAZARDOUS";
+    }
+
+    static std::string iaqStr(float const& value) {
+        if (value <= 50) {
+            return "EXCELLENT";
+        }
+        if (value <= 100) {
+            return "GOOD";
+        }
+        if (value <= 150) {
+            return "LIGHTLY POLLUTED";
+        }
+        if (value <= 200) {
+            return "MODERATELY POLLUTED";
+        }
+        if (value <= 300) {
+            return "HEAVILY POLLUTED";
+        }
+        return "SEVERELY POLLUTED";
+    }
+
+    static std::string gasStr(float const& value) {
+        if (value <= 50) {
+            return "POOR";
+        }
+        if (value < 70) {
+            return "MODERATE";
+        }
+        if (value < 90) {
+            return "GOOD";
+        }
+        return "VERY GOOD";
+    }
+
+};
+
 class BSecProxy;
 
 class AirQualityService {

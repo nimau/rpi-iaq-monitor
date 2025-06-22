@@ -47,8 +47,8 @@ int main(int, char**) {
 
     AirQualityService* airQualityService = AirQualityService::sharedInstance();
     airQualityService->setOnAirQualityChange([&](AirQuality airQuality) {
-        spdlog::info("Air quality changed: iaq={} (accuracy: {}),temperature={}, pressure={}, humidity={} co2={}, bVOC={}, gas={}",
-            airQuality.iaq, airQuality.iaq_accuracy, airQuality.temperature, airQuality.pressure, airQuality.humidity, airQuality.co2, airQuality.bVOC, airQuality.gas_percentage);
+        spdlog::info("IAQ={} (accuracy: {}), T°={}, P={}, H={}, CO2={}, VOC={}, Gas={}",
+            ValueInterpretor::iaqStr(airQuality.iaq), airQuality.iaq_accuracy, int(round(airQuality.temperature))  - IAQ_TEMP_OFFSET, int(airQuality.pressure / 100.0), ValueInterpretor::humidityStr(airQuality.humidity), ValueInterpretor::co2Str(airQuality.co2), ValueInterpretor::bvocStr(airQuality.bVOC), ValueInterpretor::gasStr(airQuality.gas_percentage));
 
             homebridgeService.update("rpi4temperature", airQuality.temperature - IAQ_TEMP_OFFSET);
             homebridgeService.update("rpi4humidity", airQuality.humidity);
