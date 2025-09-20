@@ -162,7 +162,7 @@ target_sources(air-quality-monitor
     PRIVATE ./src/air_quality_service.cpp
     PRIVATE ./src/homebridge_service.cpp
     PRIVATE ./src/simple_i2c_bus.cpp
-    PRIVATE ./src/ConfigManager.cpp
+    PRIVATE ./src/config_manager.cpp
 )
 
 target_include_directories(air-quality-monitor 

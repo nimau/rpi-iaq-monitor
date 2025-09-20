@@ -21,7 +21,7 @@
 #include <cstring>
 #include "homebridge_service.h"
 #include "air_quality_service.h"
-#include "ConfigManager.h"
+#include "config_manager.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "spdlog/sinks/rotating_file_sink.h"
@@ -127,17 +127,18 @@ int main(int argc, char** argv) {
             ValueInterpretor::co2Str(airQuality.co2), 
             ValueInterpretor::bvocStr(airQuality.bVOC), 
             ValueInterpretor::gasStr(airQuality.gas_percentage));
-        
+  
         // Update Homebridge if service is available
         if (homebridgeService) {
             homebridgeService->update("rpi4temperature", correctedTemp);
             homebridgeService->update("rpi4humidity", airQuality.humidity);
-            homebridgeService->update("rpi4pressure", airQuality.pressure / 100.0);
-            homebridgeService->update("rpi4iaq", airQuality.iaq);
-            homebridgeService->update("rpi4co2", airQuality.co2);
-            homebridgeService->update("rpi4bvoc", airQuality.bVOC);
-            homebridgeService->update("rpi4gas", airQuality.gas_percentage);
-            homebridgeService->update("rpi4iaq_accuracy", airQuality.iaq_accuracy);
+            homebridgeService->update("rpi4iaq", ValueInterpretor::iaqIndex(airQuality.iaq));
+// Following values are not yet supported by Homebridge webhooks
+//            homebridgeService->update("rpi4pressure", airQuality.pressure / 100.0);
+//            homebridgeService->update("rpi4co2", airQuality.co2);
+//            homebridgeService->update("rpi4bvoc", airQuality.bVOC);
+//            homebridgeService->update("rpi4gas", airQuality.gas_percentage);
+//            homebridgeService->update("rpi4iaq_accuracy", airQuality.iaq_accuracy);
         }
     });
     

@@ -16,7 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ConfigManager.h"
+#include "config_manager.h"
 #include "yaml-cpp/yaml.h"
 #include <spdlog/spdlog.h>
 #include <filesystem>

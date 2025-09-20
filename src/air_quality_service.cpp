@@ -28,7 +28,7 @@
 #include "bsec_integration.h"
 #include <sys/time.h>
 #include "constants.h"
-#include "ConfigManager.h"
+#include "config_manager.h"
 #include "precision_timing.h"
 
 namespace fs = std::filesystem;

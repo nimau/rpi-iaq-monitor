@@ -107,6 +107,22 @@ struct ValueInterpretor {
         return "SEVERELY POLLUTED";
     }
 
+    static int iaqIndex(float const& value) {
+        if (value < 2) {
+            return 0;
+        } else if (value < 51) {
+            return 1;
+        } else if (value < 101) {
+            return 2;
+        } else if (value < 151) {
+            return 3;
+        } else if (value < 201) {
+            return 4;
+        } else {
+            return 5;
+        }
+    }
+
     static std::string gasStr(float const& value) {
         if (value <= 50) {
             return "POOR";
