@@ -139,10 +139,6 @@ cd build
 
 ## Configuration
 
-### HomeBridge Integration
-
-Edit `src/constants.h` to configure HomeBridge URL and other settings.
-
 ### Sensor Configuration
 
 The project uses `BSEC_SAMPLE_RATE_LP` (Low Power mode) by default. You can modify this in the source code if needed.
