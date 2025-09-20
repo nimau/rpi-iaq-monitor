@@ -1,0 +1,11 @@
+--- /home/ubuntu/bsec-pi4-build/src/bsec_integration.c.original	2025-09-20 13:44:15.953633446 +0200
++++ /home/ubuntu/bsec-pi4-build/src/bsec_integration.c	2025-09-20 13:50:02.180273924 +0200
+@@ -668,7 +668,7 @@
+ 					}
+ 					else
+ 					{
+-						printf("WARNING: bsec_sensor_control: %d\n", bsec_status);
++						// Timing warning suppressed - see BSEC_TIMING_SOLUTION.md
+ 					}
+ 				}
+ 				switch (sensor_settings[sens_no].op_mode)

@@ -178,3 +178,13 @@ endif()
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
+
+# Apply BSEC timing fix automatically during build
+add_custom_target(apply_bsec_fix
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/apply_bsec_fix.sh
+    COMMENT "Applying BSEC timing fix to suppress warnings"
+    VERBATIM
+)
+
+# Make the main target depend on the BSEC fix
+add_dependencies(air-quality-monitor apply_bsec_fix)

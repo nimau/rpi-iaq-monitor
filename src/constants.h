@@ -19,7 +19,8 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-#define HOMEBRIDGE_URL ""                       // Homebridge URL to publish the data. Example: http://192.168.0.1:8581
+// Disable HomeBridge service by setting empty URL - this prevents HTTP errors
+#define HOMEBRIDGE_URL ""                       // Homebridge URL to publish the data. Example: http://***********:8581
 #define HOMEBRIDGE_PUBLISH_INTERVAL 15          // publish interval in seconds
 
 #define IAQ_SAVED_STATE_DIR "./saved_state"     // directory to save the IAQ state (will be created if it doesn't exist)

@@ -33,7 +33,9 @@ HomeBridgeService::HomeBridgeService(HomeBridgeServiceConfig config) {
 
 HomeBridgeService::~HomeBridgeService() {
     stop();
-    publishing_thread.join();
+    if (publishing_thread.joinable()) {
+        publishing_thread.join();
+    }
 }
 
 void HomeBridgeService::update(const string& sensor_id, double value) {
@@ -43,6 +45,13 @@ void HomeBridgeService::update(const string& sensor_id, double value) {
 }
 
 void HomeBridgeService::publish(const string& sensor_id, double value) {
+    // Skip publishing if URL is empty
+    if (string(config.url).empty()) {
+        spdlog::debug("[HomeBridgeService] Skipping publish (URL not configured): {}: {}", sensor_id, value);
+        sensors[string(sensor_id)] = value;
+        return;
+    }
+    
     spdlog::debug("[HomeBridgeService] publishing {}: {}", sensor_id, value);
     cpr::Url URL{config.url};
     cpr::Parameters params{
@@ -60,6 +69,12 @@ void HomeBridgeService::start() {
     if (running) {
         return;
     }
+    
+    // Check if HomeBridge is configured
+    if (string(config.url).empty()) {
+        spdlog::info("[HomeBridgeService] HomeBridge URL not configured - service will run in local-only mode");
+    }
+    
     publishing_thread = thread([=]() {
         spdlog::info("[HomeBridgeService] started");
         running = true;
