@@ -7,3 +7,6 @@ logs/
 *.backup
 *.before_fix
 start_iaq_fixed.sh
+
+# Log files
+*.log

@@ -24,7 +24,6 @@
 #include "config_manager.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include "spdlog/sinks/rotating_file_sink.h"
 
 using namespace std;
 
@@ -36,14 +35,7 @@ void create_default_logger() {
     console_sink->set_level(spdlog::level::info);
     console_sink->set_pattern("[%^%l%$] %v");
     sinks.push_back(console_sink);
-    
-    // File sink with rotation
-    auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-        "air_quality_monitor.log", 1048576 * 5, 3);
-    file_sink->set_level(spdlog::level::debug);
-    file_sink->set_pattern("[%H:%M:%S %z] [%^%l%$] %v");
-    sinks.push_back(file_sink);
-    
+    // All output goes to console (systemd captures this to journal)
     // Create logger
     auto logger = std::make_shared<spdlog::logger>("default", sinks.begin(), sinks.end());
     logger->set_level(spdlog::level::debug);
