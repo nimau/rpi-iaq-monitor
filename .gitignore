@@ -1,1 +1,4 @@
 .DS_Store
+
+# Proprietary Bosch BSEC library (do not commit)
+bsec/
