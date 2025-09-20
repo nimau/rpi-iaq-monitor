@@ -105,7 +105,11 @@ public:
     * @return          none
     */
     static void bsec_sleep_n(uint32_t t_us, void *intf_ptr) {
-        PrecisionTiming::sleep_until_us(PrecisionTiming::now_us() + t_us);
+        // Use precise nanosleep - this was the working solution
+        struct timespec req;
+        req.tv_sec = t_us / 1000000;
+        req.tv_nsec = (t_us % 1000000) * 1000;
+        nanosleep(&req, NULL);
     }
 
     /*!
