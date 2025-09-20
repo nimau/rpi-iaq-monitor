@@ -28,6 +28,7 @@
 #include "bsec_integration.h"
 #include <sys/time.h>
 #include "constants.h"
+#include "ConfigManager.h"
 #include "precision_timing.h"
 
 namespace fs = std::filesystem;
@@ -150,7 +151,7 @@ public:
 
         // Here we will load a state string from a previous use of BSEC
         fstream bsec_state_file;
-        string file_path = string(IAQ_SAVED_STATE_DIR) + "/" + IAQ_SAVED_STATE_FILE;
+        string file_path = ConfigManager::instance().get().getSavedStatePath();
         if (!fs::exists(file_path)) {
             spdlog::debug("[BSecProxy] State file does not exist");
             return 0;
@@ -181,13 +182,14 @@ public:
         state.n_serialized_state = length;
         memcpy(state.serialized_state, state_buffer, length * sizeof(uint8_t));
 
-        if (!fs::exists(IAQ_SAVED_STATE_DIR)) {
+        const Config& config = ConfigManager::instance().get();
+        if (!fs::exists(config.iaq_saved_state_dir)) {
             spdlog::debug("[BSecProxy] State folder does not exist");
-            fs::create_directory(IAQ_SAVED_STATE_DIR);
+            fs::create_directory(config.iaq_saved_state_dir);
         }
 
         fstream bsec_state_file;
-        string file_path = string(IAQ_SAVED_STATE_DIR) + "/" + IAQ_SAVED_STATE_FILE;
+        string file_path = ConfigManager::instance().get().getSavedStatePath();
         bsec_state_file.open(file_path, ios::out | ios::binary);
         bsec_state_file.write(reinterpret_cast<char*>(&state), sizeof(BSECSerializedState));
         bsec_state_file.close();
@@ -233,12 +235,16 @@ AirQualityService* AirQualityService::sharedInstance() {
     return shared;
 }
 
+void AirQualityService::start() {
+    monitor();
+}
+
 int AirQualityService::monitor() {
     return_values_init ret;
 
     spdlog::info("[AirQualityService] init");
 
-    if (i2c_bus.openI2CBus(IAQ_I2C_BUS_DEVICE, I2C_BUS_ADDRESS) < 0) {
+    if (i2c_bus.openI2CBus(ConfigManager::instance().get().iaq_i2c_bus_device.c_str(), I2C_BUS_ADDRESS) < 0) {
         spdlog::error("[AirQualityService] Failed to open the i2c bus");
         return -1;
     }

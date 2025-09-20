@@ -1,0 +1,40 @@
+[Unit]
+Description=RPi Indoor Air Quality Monitor
+Documentation=https://github.com/your-repo/rpi-iaq-monitor
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/rpi-iaq-monitor
+ExecStart=/opt/rpi-iaq-monitor/air-quality-monitor --config /opt/rpi-iaq-monitor/config.yaml
+Restart=always
+RestartSec=10
+
+# Environment
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=iaq-monitor
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/rpi-iaq-monitor
+
+# Resource limits
+MemoryMax=128M
+CPUQuota=50%
+
+# Real-time scheduling for precise timing (referenced in optimized docs)
+# Uncomment if using the optimized build with real-time requirements
+# Nice=-10
+
+[Install]
+WantedBy=multi-user.target

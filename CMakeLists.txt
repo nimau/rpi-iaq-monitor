@@ -129,6 +129,24 @@ FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
 FetchContent_MakeAvailable(cpr)
 
 # spdlog
+# yaml-cpp for configuration management
+find_package(yaml-cpp QUIET)
+if(NOT yaml-cpp_FOUND)
+    message(STATUS "yaml-cpp not found system-wide, fetching from GitHub...")
+    FetchContent_Declare(
+        yaml-cpp
+        GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
+        GIT_TAG 0.8.0
+    )
+    
+    # Disable yaml-cpp tests and tools to speed up build
+    set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
+    set(YAML_BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+    
+    FetchContent_MakeAvailable(yaml-cpp)
+    message(STATUS "yaml-cpp fetched and configured")
+endif()
 find_package(spdlog REQUIRED)
 
 #############################################################################
@@ -144,6 +162,7 @@ target_sources(air-quality-monitor
     PRIVATE ./src/air_quality_service.cpp
     PRIVATE ./src/homebridge_service.cpp
     PRIVATE ./src/simple_i2c_bus.cpp
+    PRIVATE ./src/ConfigManager.cpp
 )
 
 target_include_directories(air-quality-monitor 
@@ -157,6 +176,7 @@ target_link_libraries(air-quality-monitor
     PRIVATE ${BSEC_LIBRARY}
     PRIVATE cpr::cpr
     PRIVATE spdlog::spdlog
+    PRIVATE yaml-cpp
     PRIVATE i2c
     PRIVATE rt  # Required for clock_nanosleep and high-resolution timers
 )

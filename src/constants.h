@@ -19,14 +19,8 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-// Disable HomeBridge service by setting empty URL - this prevents HTTP errors
-#define HOMEBRIDGE_URL ""                       // Homebridge URL to publish the data. Example: http://***********:8581
-#define HOMEBRIDGE_PUBLISH_INTERVAL 15          // publish interval in seconds
-
-#define IAQ_SAVED_STATE_DIR "./saved_state"     // directory to save the IAQ state (will be created if it doesn't exist)
-#define IAQ_SAVED_STATE_FILE "bsec_state_file"  // file to save the IAQ state (will be created if it doesn't exist)
-#define IAQ_I2C_BUS_DEVICE "/dev/i2c-1"         // I2C bus device
-#define IAQ_TEMP_OFFSET 9.0f                    // temperature offset in Celsius (depends on the sensor placement and the Raspberry Pi heat)
-
+// This file previously contained hardcoded configuration values.
+// All configuration is now handled by ConfigManager and config.yaml.
+// See ConfigManager.h and the generated config.yaml file for configurable options.
 
 #endif // CONSTANTS_H_

@@ -130,6 +130,7 @@ public:
     AirQualityService(const AirQualityService& obj) = delete; 
     void operator=(const AirQualityService &) = delete;
 
+    void start();
     int monitor();
     void setOnAirQualityChange(std::function<void(AirQuality)> onQualityChange);
 

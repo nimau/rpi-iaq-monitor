@@ -1,0 +1,23 @@
+# RPi IAQ Monitor Configuration Example
+# Copy this to config.yaml and modify values as needed
+
+# Homebridge URL for publishing sensor data
+# Leave empty to disable Homebridge integration
+# Example: "http://192.168.1.100:51828"
+homebridge_url: ""
+
+# Interval in seconds for publishing data to Homebridge
+homebridge_publish_interval_seconds: 15
+
+# Temperature offset in Celsius to compensate for sensor placement
+# This accounts for heat from the Raspberry Pi
+iaq_temp_offset: 9.0
+
+# I2C bus device path for the BME68x sensor
+iaq_i2c_bus_device: "/dev/i2c-1"
+
+# Directory to store BSEC algorithm state (for calibration persistence)
+iaq_saved_state_dir: "./saved_state"
+
+# Filename for BSEC state file
+iaq_saved_state_file: "bsec_state_file"
