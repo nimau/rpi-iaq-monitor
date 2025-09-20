@@ -41,6 +41,86 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#############################################################################
+# BSEC (Bosch Sensortec Environmental Cluster) - External Dependency
+#############################################################################
+# BSEC is a proprietary library from Bosch Sensortec that cannot be redistributed.
+# Users must download it themselves from Bosch Sensortec and provide the path.
+
+# Get BSEC_DIR from environment variable or CMake cache
+set(BSEC_DIR "$ENV{BSEC_DIR}" CACHE PATH "Path to Bosch BSEC installation (must contain inc/ and lib/ subdirectories)")
+
+if(NOT BSEC_DIR)
+    message(FATAL_ERROR 
+        "BSEC library not found. Please download the Bosch BSEC library and set BSEC_DIR.\n"
+        "Steps:\n"
+        "1. Download BSEC from Bosch Sensortec (search: 'Bosch BSEC Software Library')\n"
+        "2. Accept the license and extract the archive\n"
+        "3. Set environment variable: export BSEC_DIR=/path/to/extracted/BSEC\n"
+        "4. Or pass to CMake: cmake -DBSEC_DIR=/path/to/extracted/BSEC .\n"
+        "The BSEC directory must contain inc/ and lib/ subdirectories.")
+endif()
+
+# Find BSEC include directory
+find_path(BSEC_INCLUDE_DIR 
+    NAMES bsec_interface.h bsec_datatypes.h
+    HINTS "${BSEC_DIR}/inc" "${BSEC_DIR}/include" "${BSEC_DIR}/src"
+    DOC "BSEC include directory"
+    REQUIRED
+)
+
+# Find BSEC library - try different possible locations and names
+find_library(BSEC_LIBRARY
+    NAMES algobsec bsec libalgobsec.a libbsec.a
+    HINTS "${BSEC_DIR}/lib" 
+          "${BSEC_DIR}/lib/gcc" 
+          "${BSEC_DIR}/lib/Release" 
+          "${BSEC_DIR}/binaries"
+          "${BSEC_DIR}"
+    DOC "BSEC library file"
+    REQUIRED
+)
+
+# Find BME68x driver sources (usually bundled with BSEC)
+find_path(BME68X_INCLUDE_DIR
+    NAMES bme68x.h bme68x_defs.h
+    HINTS "${BSEC_DIR}/src" 
+          "${BSEC_DIR}/inc" 
+          "${BSEC_DIR}/include"
+          "${BSEC_DIR}/algo/normal_version/bin/gcc/Raspberry_Pi"
+    DOC "BME68x driver include directory"
+    REQUIRED
+)
+
+# Find BME68x source files
+find_file(BME68X_SOURCE
+    NAMES bme68x.c
+    HINTS "${BSEC_DIR}/src"
+          "${BSEC_DIR}/algo/normal_version/bin/gcc/Raspberry_Pi"
+    DOC "BME68x driver source file"
+    REQUIRED
+)
+
+find_file(BSEC_INTEGRATION_SOURCE
+    NAMES bsec_integration.c
+    HINTS "${BSEC_DIR}/src"
+          "${BSEC_DIR}/algo/normal_version/bin/gcc/Raspberry_Pi"  
+    DOC "BSEC integration source file"
+    REQUIRED
+)
+
+message(STATUS "BSEC Found:")
+message(STATUS "  BSEC_DIR: ${BSEC_DIR}")
+message(STATUS "  BSEC_INCLUDE_DIR: ${BSEC_INCLUDE_DIR}")
+message(STATUS "  BME68X_INCLUDE_DIR: ${BME68X_INCLUDE_DIR}")
+message(STATUS "  BSEC_LIBRARY: ${BSEC_LIBRARY}")
+message(STATUS "  BME68X_SOURCE: ${BME68X_SOURCE}")
+message(STATUS "  BSEC_INTEGRATION_SOURCE: ${BSEC_INTEGRATION_SOURCE}")
+
+#############################################################################
+# Other Dependencies
+#############################################################################
+
 include(FetchContent)
 
 # Fetch CPR if needed
@@ -51,12 +131,16 @@ FetchContent_MakeAvailable(cpr)
 # spdlog
 find_package(spdlog REQUIRED)
 
+#############################################################################
+# Target Configuration
+#############################################################################
+
 add_executable(air-quality-monitor)
 
 target_sources(air-quality-monitor 
     PRIVATE main.cpp
-    PRIVATE ./bsec/src/bme68x.c
-    PRIVATE ./bsec/src/bsec_integration.c
+    PRIVATE ${BME68X_SOURCE}
+    PRIVATE ${BSEC_INTEGRATION_SOURCE}
     PRIVATE ./src/air_quality_service.cpp
     PRIVATE ./src/homebridge_service.cpp
     PRIVATE ./src/simple_i2c_bus.cpp
@@ -65,16 +149,12 @@ target_sources(air-quality-monitor
 target_include_directories(air-quality-monitor 
     PRIVATE ./include
     PRIVATE ./src
-    PRIVATE ./bsec/src
-)
-
-target_link_directories(air-quality-monitor 
-    PRIVATE ./bsec/lib
-    PRIVATE ./lib
+    PRIVATE ${BSEC_INCLUDE_DIR}
+    PRIVATE ${BME68X_INCLUDE_DIR}
 )
 
 target_link_libraries(air-quality-monitor 
-    PRIVATE algobsec
+    PRIVATE ${BSEC_LIBRARY}
     PRIVATE cpr::cpr
     PRIVATE spdlog::spdlog
     PRIVATE i2c
