@@ -19,7 +19,7 @@
 ## BSEC Library Analysis
 
 ### ✅ BSEC Version
-- **Library File**: `libalgobsec.a` (128KB)
+- **Library File**: `BSEC library (user-supplied, not included)
 - **Architecture**: ARM compatible (current ar archive)
 - **Version**: BSEC 1.x (based on library size and API usage)
 - **API Functions**: `bsec_get_version`, `bsec_get_version_m` available
